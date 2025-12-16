@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from courses.models import Course, Resource # Link assessments to courses
 from django.core.exceptions import ValidationError
+from school.models import School
 
 QUESTION_TYPES = [
     ('MCQ', 'Multiple Choice Question'),
@@ -17,7 +18,18 @@ class Exam(models.Model):
     # Teacher/Admin settings
     start_time = models.DateTimeField()
     duration_minutes = models.IntegerField(default=60, help_text="Duration of the exam in minutes.")
-    
+    # Schools
+    # Make nullable to avoid interactive default prompt when adding this field
+    school = models.ForeignKey(
+        School,
+        on_delete=models.CASCADE,
+        related_name='school_exams',
+        null=True,
+        blank=True,
+    )
+    is_inter_school = models.BooleanField(default=False) # New flag for public exams
+    is_public = models.BooleanField(default=False) # New flag for school-wide announcements
+
     # Rules
     is_realtime = models.BooleanField(default=True, help_text="If false, it's a practice test.")
     show_score_immediately = models.BooleanField(default=False)
@@ -132,5 +144,21 @@ class LearningProgress(models.Model):
     def __str__(self):
         return f'Progress for {self.user.username}'
     
-
-
+# (Conceptual)
+class ManualGrade(models.Model):
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assessment_manual_grades_given')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assessment_manual_grades')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='assessment_manual_grades')
+    assignment_name = models.CharField(max_length=100)
+    score = models.IntegerField()
+    max_score = models.IntegerField(default=100)
+    # Optional: 
+    editable_by_teacher = models.BooleanField(default=True)
+    recorded_at = models.DateTimeField(auto_now_add=True)
+   
+    class Meta:
+        unique_together = ('student', 'course', 'assignment_name') # Ensure one grade per student/assignment
+        
+    def __str__(self):
+        return f'{self.assignment_name} - {self.student.username}: {self.score}/{self.max_score}'
+    

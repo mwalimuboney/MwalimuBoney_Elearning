@@ -1,6 +1,6 @@
 # assessment/serializers.py
 from rest_framework import serializers
-from .models import Exam, Question, UserAttempt, AnswerSubmission, LearningProgress
+from .models import Exam, Question, UserAttempt, AnswerSubmission, LearningProgress, ManualGrade
 from users.serializers import UserProfileSerializer # To display profile/role data
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -32,3 +32,18 @@ class LearningProgressSerializer(serializers.ModelSerializer):
         fields = ['user', 'user_profile', 'total_resources_read', 'total_assessments_taken', 'average_assessment_score', 'last_updated']
         read_only_fields = fields
 
+class AnswerSubmissionSerializer(serializers.ModelSerializer):
+    question_text = serializers.CharField(source='question.text', read_only=True)
+    
+    class Meta:
+        model = AnswerSubmission
+        fields = ['id', 'user_attempt', 'question', 'question_text', 'user_answer', 'is_correct']   
+        
+
+class ManualGradeSerializer(serializers.ModelSerializer):
+    student_username = serializers.CharField(source='student.username', read_only=True)
+    
+    class Meta:
+        model = ManualGrade
+        fields = '__all__'
+        read_only_fields = ['teacher']

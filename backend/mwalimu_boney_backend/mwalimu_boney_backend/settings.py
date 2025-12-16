@@ -43,13 +43,23 @@ INSTALLED_APPS = [
     # ... Third-party apps
     'rest_framework',
     'corsheaders',
-
+    'djoser',
     # Your apps
     'courses',
     'users',
     'chat',
     'assessment',
-    
+    'notifications',
+    'school',
+    'reports',
+    'communications',
+    'gamification',
+    'progress',
+    'exams',
+    'ai_features',
+      
+    # Project-level app config to import centralized admin registrations
+    'mwalimu_boney_backend.apps.MwalimuBoneyBackendConfig',
    
 ]
 
@@ -67,7 +77,35 @@ MIDDLEWARE = [
 # In production, change this to a specific list of domains (e.g., 'http://yourreactapp.com')
 CORS_ALLOW_ALL_ORIGINS = True
 
-# .vscode/settings.json
+# This setting allows specific origins to make cross-site HTTP requests.
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost:8000",
+    "http://localhost:8000",
+    
+    # Include your frontend development URL here, e.g.:
+    # "http://localhost:3000",
+]
+
+# Allow credentials (cookies/tokens) to be sent cross-origin
+CORS_ALLOW_CREDENTIALS = True
+
+
+
+# --- CSRF Trusted Origins Configuration ---
+# This list specifies origins that are trusted for CSRF protection.
+CSRF_TRUSTED_ORIGINS = [
+    # Required for Django to accept POST/PUT/DELETE requests from itself
+    'https://localhost:8000',
+    'http://localhost:8000',
+    
+    # Add the origin of your frontend application if it's separate (e.g., React on port 3000)
+    # Example: 'http://localhost:3000',
+    # Example: 'https://staging.yourdomain.com',
+]
+
+# If you are using Django REST Framework and testing with API clients 
+# (like Postman), you might need to relax this for development, but 
+# CSRF_TRUSTED_ORIGINS is the correct fix for browser-based requests.
 
 {
     # ... other settings ...
@@ -110,12 +148,21 @@ REST_FRAMEWORK = {
 
 # Simple JWT Configuration (Optional, for custom settings like token lifetime)
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "AUTH_HEADER_TYPES": ("Bearer",),
     # ... other settings
 }
 
+# --- DJOSER/SIMPLE JWT SETTINGS ---
+DJOSER = {
+    # Specifies the JWT authentication backend
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': False, # Set to True if you want email verification
+    'SERIALIZERS': {'current_user': 'users.serializers.UserProfileSerializer',}, # Can be used to override default serializers
+}
 
 CHANNEL_LAYERS = {
     'default': {
@@ -186,3 +233,16 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+
+# FILE: project_root/settings.py (Add to the bottom)
+
+# --- CELERY CONFIGURATION ---
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0' # Use database 0
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/1' # Use database 1 for results
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Nairobi' # Or your local timezone
+CELERY_ENABLE_UTC = False

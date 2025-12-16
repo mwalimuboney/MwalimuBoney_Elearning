@@ -166,12 +166,8 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.AddConstraint(
-            model_name="userattempt",
-            constraint=models.UniqueConstraint(
-                condition=models.Q(("exam__is_realtime", True)),
-                fields=("user", "exam"),
-                name="unique_realtime_attempt",
-            ),
-        ),
+        # NOTE: Removed original UniqueConstraint that referenced a joined field
+        # (exam__is_realtime) because SQLite does not support joined field
+        # references in conditional constraints. The final, compatible
+        # constraint is added later in migration 0005 (using a local field).
     ]

@@ -1,6 +1,8 @@
 # courses/serializers.py
 from rest_framework import serializers
-from .models import Course, Lesson, Quiz, Resource
+from .models import Course, Lesson, Quiz, Resource, Announcement
+from .validators import FileAntiVirusValidator, MaxFileSizeValidator
+from django.core.validators import FileExtensionValidator
 
 class QuizSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,7 +25,13 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class ResourceSerializer(serializers.ModelSerializer):
     uploader_name = serializers.CharField(source='uploader.username', read_only=True)
-    
+    file = serializers.FileField(
+        validators=[
+            FileAntiVirusValidator(), 
+            MaxFileSizeValidator(10 * 1024 * 1024), # 10MB limit
+            FileExtensionValidator(allowed_extensions=['pdf', 'docx', 'mp3', 'mp4'])
+        ]
+    )
     class Meta:
         model = Resource
         fields = [
@@ -33,3 +41,10 @@ class ResourceSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['uploader', 'uploaded_at', 'views']
 
+class AnnouncementSerializer(serializers.ModelSerializer):
+    teacher_username = serializers.CharField(source='teacher.username', read_only=True)
+    
+    class Meta:
+        model = Announcement
+        fields = '__all__'
+        read_only_fields = ['teacher']

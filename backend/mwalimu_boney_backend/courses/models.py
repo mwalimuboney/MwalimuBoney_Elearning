@@ -1,12 +1,22 @@
 # courses/models.py
 from django.db import models
 from django.contrib.auth.models import User
+from school.models import School
 
 class Course(models.Model):
     """Represents a full educational course."""
     title = models.CharField(max_length=200)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    # Allow null temporarily so migrations don't prompt for a default for existing rows
+    school = models.ForeignKey(
+        School,
+        on_delete=models.CASCADE,
+        related_name='school_courses',
+        null=True,
+        blank=True,
+    )
+    teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='courses_taught')
 
     def __str__(self):
         return self.title
@@ -73,3 +83,42 @@ class Resource(models.Model):
 
 # NOTE: You must also configure MEDIA_ROOT and MEDIA_URL in settings.py 
 # to handle file uploads correctly. (See section 3)
+
+# (Conceptual)
+class Announcement(models.Model):
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    is_global = models.BooleanField(default=False) # For all users
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
+    posted_at = models.DateTimeField(auto_now_add=True)
+    # Add a link field: 
+    link_url = models.URLField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-posted_at']
+
+        
+    def __str__(self):
+        target = "Global" if self.is_global else self.course.title
+        return f'Announcement: {self.title} for {target}'
+    
+
+
+class ManualGrade(models.Model):
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='manual_grades')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    assignment_name = models.CharField(max_length=100)
+    score = models.IntegerField()
+    max_score = models.IntegerField(default=100)
+    # Optional: 
+    editable_by_teacher = models.BooleanField(default=True)
+    recorded_at = models.DateTimeField(auto_now_add=True)
+   
+    class Meta:
+        unique_together = ('student', 'course', 'assignment_name') # Ensure one grade per student/assignment
+        
+    def __str__(self):
+        return f'{self.assignment_name} - {self.student.username}: {self.score}/{self.max_score}'   
+    

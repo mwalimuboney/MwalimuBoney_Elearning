@@ -1,0 +1,18 @@
+<form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    <input type="text" formControlName="username" placeholder="Username">
+    
+    <div *ngIf="f['username'].pending">Checking uniqueness...</div>
+    
+    <div *ngIf="f['username'].errors && (f['username'].dirty || f['username'].touched)">
+        <div *ngIf="f['username'].errors['unique']" class="error-message">
+            This username is already taken.
+        </div>
+        <div *ngIf="f['username'].errors['required']" class="error-message">
+            Username is required.
+        </div>
+    </div>
+    
+    <input type="email" formControlName="email" placeholder="Email">
+    <div *ngIf="f['email'].pending">Checking email...</div>
+    <button type="submit" [disabled]="registrationForm.invalid">Register</button>
+</form>

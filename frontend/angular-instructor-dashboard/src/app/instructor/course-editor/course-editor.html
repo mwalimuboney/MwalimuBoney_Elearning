@@ -1,0 +1,39 @@
+<div *ngIf="isNewCourse || currentCourse" class="course-editor-container">
+  
+  <h3>{{ isNewCourse ? 'Create New Course' : 'Editing: ' + currentCourse.title }}</h3>
+  
+  <form [formGroup]="courseForm" (ngSubmit)="saveCourseDetails()" class="card">
+    <input formControlName="title" placeholder="Course Title" required>
+    <textarea formControlName="description" placeholder="Course Description" rows="5" required></textarea>
+    
+    <label>
+      <input type="checkbox" formControlName="is_published">
+      Publish Course
+    </label>
+    
+    <button type="submit" [disabled]="courseForm.invalid" class="btn btn-save">
+      {{ isNewCourse ? 'Create Course' : 'Save Details' }}
+    </button>
+  </form>
+
+  <ng-container *ngIf="!isNewCourse">
+    <mat-tab-group> <mat-tab label="Lessons & Structure">
+        <app-lesson-editor-list 
+          [courseId]="courseId"
+          [lessons]="courseLessons"
+          (lessonUpdated)="handleLessonChange()">
+        </app-lesson-editor-list>
+      </mat-tab>
+
+      <mat-tab label="Course Resources">
+        <app-resource-uploader [courseId]="courseId"></app-resource-uploader>
+      </mat-tab>
+
+      <mat-tab label="Assessments">
+        <p>Go to <a [routerLink]="['/instructor/exams/new']">Exam Builder</a> to create assessments.</p>
+      </mat-tab>
+      
+    </mat-tab-group>
+  </ng-container>
+
+</div>

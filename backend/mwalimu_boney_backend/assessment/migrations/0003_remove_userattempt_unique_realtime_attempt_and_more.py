@@ -12,16 +12,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveConstraint(
-            model_name="userattempt",
-            name="unique_realtime_attempt",
-        ),
-        migrations.AddConstraint(
-            model_name="userattempt",
-            constraint=models.UniqueConstraint(
-                condition=models.Q(("exam__is_realtime", False)),
-                fields=("user", "exam"),
-                name="unique_realtime_attempt",
-            ),
-        ),
+        # This migration previously removed/added a constraint that referenced
+        # a joined field (`exam__is_realtime`). That constraint has been
+        # removed from earlier migrations to ensure compatibility with
+        # SQLite. No operations are required here.
     ]

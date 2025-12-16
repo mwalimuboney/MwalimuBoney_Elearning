@@ -1,0 +1,57 @@
+<div class="course-manager-container">
+  <h2>Your Course Management Dashboard</h2>
+
+  <button (click)="createNewCourse()" class="btn btn-primary">
+    + Create New Course
+  </button>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Loading course data...</p>
+  </div>
+
+  <ng-container *ngIf="courses$ | async as courses">
+    
+    <div *ngIf="courses.length === 0 && !isLoading" class="empty-state">
+      <p>You have not created any courses yet. Start one now!</p>
+    </div>
+
+    <table *ngIf="courses.length > 0" class="course-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Created On</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let course of courses">
+          <td>{{ course.title }}</td>
+          <td>{{ course.description | slice:0:100 }}...</td>
+          <td>
+            <span [class.published]="course.is_published" [class.draft]="!course.is_published">
+              {{ course.is_published ? 'Published' : 'Draft' }}
+            </span>
+          </td>
+          <td>{{ course.created_at | date:'shortDate' }}</td>
+          <td class="action-buttons">
+            <button (click)="editCourse(course.id)" class="btn btn-sm btn-edit">
+              Edit
+            </button>
+            
+            <button (click)="togglePublishStatus(course.id, course.is_published)" 
+                    [ngClass]="course.is_published ? 'btn-unpublish' : 'btn-publish'">
+              {{ course.is_published ? 'Unpublish' : 'Publish' }}
+            </button>
+            
+            <button (click)="deleteCourse(course.id)" class="btn btn-sm btn-delete">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+</div>

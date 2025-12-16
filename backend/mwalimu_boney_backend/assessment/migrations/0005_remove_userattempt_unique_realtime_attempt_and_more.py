@@ -12,10 +12,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveConstraint(
-            model_name="userattempt",
-            name="unique_realtime_attempt",
-        ),
         migrations.RenameField(
             model_name="userattempt",
             old_name="exam_is_realtime",

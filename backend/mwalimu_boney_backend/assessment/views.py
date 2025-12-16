@@ -4,12 +4,13 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from users.permissions import IsTeacherOrAdmin
-from .models import Exam, Question, UserAttempt, AnswerSubmission, LearningProgress
-from .serializers import ExamSerializer, LearningProgressSerializer, QuestionSerializer
+from .models import Exam, Question, UserAttempt, AnswerSubmission, LearningProgress, ManualGrade
+from .serializers import ExamSerializer, LearningProgressSerializer, QuestionSerializer, UserAttemptSerializer, ManualGradeSerializer
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from datetime import timedelta
 import json
+from gamification.services import XPService
 
 class ExamManagerViewSet(viewsets.ModelViewSet):
     """
@@ -27,6 +28,8 @@ class ExamManagerViewSet(viewsets.ModelViewSet):
         exam = self.get_object()
         serializer = QuestionSerializer(exam.questions.all(), many=True)
         return Response(serializer.data)
+    
+    
 
 class StudentAssessmentView(viewsets.GenericViewSet):
     """
@@ -115,3 +118,58 @@ class LearningProgressReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
         
         # Students only see their own progress
         return LearningProgress.objects.filter(user=user)
+
+class ManualGradeViewSet(viewsets.ModelViewSet):
+    """Teachers/Admins can record and modify manual grades."""
+    queryset = ManualGrade.objects.all()
+    serializer_class = ManualGradeSerializer
+    permission_classes = [IsTeacherOrAdmin]
+
+    def perform_create(self, serializer):
+        # Automatically set the teacher to the logged-in user
+        serializer.save(teacher=self.request.user)
+    
+    def get_queryset(self):
+        # Teachers only see grades for their own courses/students
+        if self.request.user.profile.role == 'TEACHER':
+            # This requires a more complex check on course ownership, 
+            # but for simplicity, allow all grades for now.
+            return self.queryset.filter(teacher=self.request.user)
+        return self.queryset
+    
+class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet to allow students to view their own submissions and scores.
+    """
+    queryset = UserAttempt.objects.all()
+    serializer_class = UserAttemptSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """Students can only see their own submissions."""
+        user = self.request.user
+        return UserAttempt.objects.filter(user=user, is_completed=True)
+    
+    @action(detail=False, methods=['post'])
+    def post_submission(self, request):
+        """Handles submission of an assessment and triggers gamification XP awarding."""
+        
+        # Existing logic to receive submission, grade it, and save UserAttempt
+
+        user_attempt = self.perform_grading_and_save(request.data)
+        
+        # --- NEW: Gamification Trigger ---
+        if user_attempt.passed: # Assuming a boolean 'passed' field exists
+            XPService.award_xp(
+                user=request.user, 
+                action_key='QUIZ_PASSED', 
+                context_id=user_attempt.exam.id
+            )
+            
+        # ... return submission results
+        return Response(UserAttemptSerializer(user_attempt).data, status=status.HTTP_201_CREATED)
+    def perform_grading_and_save(self, submission_data):
+        # Placeholder for grading logic
+        pass
+        
+        

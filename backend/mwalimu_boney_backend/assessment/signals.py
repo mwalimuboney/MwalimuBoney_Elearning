@@ -1,6 +1,7 @@
 # assessment/signals.py
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from notifications.services import CommunicationService # Assuming you create this service
 #from .models import UserAttempt, LearningProgress
 from assessment.models import UserAttempt, LearningProgress
 
@@ -25,3 +26,26 @@ def update_learning_progress(sender, instance, created, **kwargs):
         # Note: total_resources_read needs a signal from the ResourceView model
         
         progress.save()
+
+
+
+
+@receiver(post_save, sender=UserAttempt)
+def handle_assessment_notifications(sender, instance, created, **kwargs):
+    # Determine the associated teacher (Requires linking Exam to Instructor)
+    # ASSUMPTION: The Course model has an 'instructor' FK to User
+    teacher = instance.exam.course.instructor
+    student = instance.user
+
+    if created:
+        # Student just STARTED the exam (UserAttempt created)
+        subject = f"ACTION REQUIRED: {student.username} started {instance.exam.title}"
+        content = f"Student {student.username} has just begun the exam '{instance.exam.title}'. Start time: {instance.start_time.strftime('%H:%M')}."
+        # Trigger communication service to notify the teacher
+        CommunicationService.notify(teacher, subject, content, channels=['WA', 'EMAIL'])
+
+    elif not created and instance.is_completed and instance.score is not None:
+        # Student just FINISHED the exam (UserAttempt updated and completed)
+        subject = f"ASSESSMENT COMPLETE: {student.username} finished {instance.exam.title}"
+        content = f"Student {student.username} completed '{instance.exam.title}'. Score: {instance.score} points."
+        CommunicationService.notify(teacher, subject, content, channels=['WA', 'EMAIL'])
