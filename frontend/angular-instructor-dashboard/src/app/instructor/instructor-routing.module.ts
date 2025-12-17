@@ -2,16 +2,16 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CourseManagerComponent } from './components/courses/course-manager/course-manager.component';
-import { CourseEditorComponent } from './components/courses/course-editor/course-editor.component';
-import { ExamBuilderComponent } from './components/exams/exam-builder/exam-builder.component';
-import { AttemptReviewComponent } from './components/exams/attempt-review/attempt-review.component';
-import { MessagingToolComponent } from './components/messaging/messaging-tool/messaging-tool.component';
-import { DashboardHomeComponent } from './components/dashboard/dashboard-home/dashboard-home.component';
+import { CourseManagerComponent } from './course-manager/course-manager/course-manager';
+import { CourseEditorComponent } from './course-editor/course-editor';
+import { ExamBuilderComponent } from './components/exams/exam-builder/exam-builder/exam-builder';
+import { AttemptReviewComponent } from './components/exams/attempt-review/attempt-review';
+import { MessagingToolComponent } from './components/messaging/messaging-tool/messaging-tool';
+import { DashboardHomeComponent } from './components/dashboard/dashboard-home/dashboard-home';
 
 const routes: Routes = [
   // Instructor Dashboard Home
-  { path: 'dashboard', component: DashboardHomeComponent },
+  { path: '', component: DashboardHomeComponent },
 
   // Course Content Management
   { path: 'courses', component: CourseManagerComponent },
@@ -28,6 +28,11 @@ const routes: Routes = [
 
   // Default redirect for the instructor segment
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, 
+
+  
+  { path: 'courses', component: CourseManagerComponent },
+  { path: 'courses/:id/edit', component: CourseEditorComponent },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' } // default to /instructor/dashboard
 ];
 
 @NgModule({

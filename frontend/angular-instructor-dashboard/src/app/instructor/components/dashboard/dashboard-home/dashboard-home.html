@@ -1,0 +1,36 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Instructor Dashboard</h1>
+    <button mat-raised-button color="primary" routerLink="/instructor/courses/new">
+      <mat-icon>add</mat-icon> Create New Course
+    </button>
+  </header>
+
+  <div class="stats-grid">
+    @for (stat of stats; track stat.label) {
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-icon" [style.background-color]="stat.color">
+            <mat-icon>{{ stat.icon }}</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ stat.count }}</h3>
+            <p>{{ stat.label }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  <section class="quick-actions mt-4">
+    <h3>Quick Actions</h3>
+    <div class="action-buttons">
+      <button mat-stroked-button routerLink="/instructor/courses">
+        <mat-icon>list</mat-icon> Manage Courses
+      </button>
+      <button mat-stroked-button color="accent">
+        <mat-icon>analytics</mat-icon> View Reports
+      </button>
+    </div>
+  </section>
+</div>

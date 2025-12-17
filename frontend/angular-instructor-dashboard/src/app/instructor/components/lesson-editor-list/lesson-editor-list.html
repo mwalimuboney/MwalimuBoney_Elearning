@@ -1,0 +1,43 @@
+<div class="lesson-manager">
+  <div class="actions-bar mb-3">
+    <h3>Curriculum Structure</h3>
+    <button mat-flat-button color="primary" (click)="addLesson()">
+      <mat-icon>add_circle</mat-icon> Add New Lesson
+    </button>
+  </div>
+
+  @if (lessons.length === 0) {
+    <div class="empty-state">
+      <mat-icon>auto_stories</mat-icon>
+      <p>No lessons added yet. Start building your curriculum!</p>
+    </div>
+  } @else {
+    <mat-accordion multi="false">
+      @for (lesson of lessons; track lesson.id) {
+        <mat-expansion-panel class="lesson-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon class="me-2">drag_indicator</mat-icon>
+              {{ lesson.title }}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ lesson.is_preview ? 'Free Preview' : 'Locked' }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="lesson-details">
+            <p>{{ lesson.summary || 'No summary provided.' }}</p>
+            <div class="lesson-actions">
+              <button mat-button color="primary" (click)="editLesson(lesson.id)">
+                <mat-icon>edit</mat-icon> Edit Content
+              </button>
+              <button mat-button color="warn" (click)="deleteLesson(lesson.id)">
+                <mat-icon>delete</mat-icon> Remove
+              </button>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  }
+</div>

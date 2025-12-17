@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TeacherClass } from './class.service'; // Re-use the TeacherClass interface
+import { TeacherClass } from './class'; // Re-use the TeacherClass interface
 
 @Injectable({ providedIn: 'root' })
 export class MessagingService {

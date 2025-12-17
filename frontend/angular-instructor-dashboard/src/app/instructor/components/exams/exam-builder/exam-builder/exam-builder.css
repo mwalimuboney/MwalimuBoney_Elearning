@@ -1,0 +1,32 @@
+.exam-builder-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 15px;
+}
+
+.question-card {
+  border-left: 5px solid #3f51b5;
+  transition: transform 0.2s ease;
+}
+
+.question-card:hover {
+  transform: scale(1.01);
+}
+
+.question-number {
+  background-color: #3f51b5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.w-100 {
+  width: 100%;
+}

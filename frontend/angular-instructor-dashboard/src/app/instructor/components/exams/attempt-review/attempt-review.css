@@ -1,0 +1,51 @@
+.review-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.score-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-right: 1rem;
+  color: #2c3e50;
+}
+
+.review-item {
+  border-left: 8px solid;
+}
+
+.correct-border { border-left-color: #4caf50; }
+.incorrect-border { border-left-color: #f44336; }
+
+.question-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 1rem 0;
+}
+
+.answer-box {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.answer-line {
+  margin-bottom: 0.5rem;
+}
+
+.points-badge {
+  background: #eee;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin-left: auto;
+}
+
+.feedback-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.9rem;
+}

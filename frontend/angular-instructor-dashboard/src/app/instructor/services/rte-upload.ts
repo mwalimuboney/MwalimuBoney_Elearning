@@ -29,7 +29,7 @@ import { Observable } from 'rxjs';
 
 
 @Injectable({ providedIn: 'root' })
-export class RteUploadService {
+export class RteUpload {
   private apiUrl = '/api'; // Use relative path in production
   private uploadEndpoint = `${this.apiUrl}/courses/upload-rte-image/`;
 

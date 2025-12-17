@@ -16,16 +16,16 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MessagingService } from '../../../services/messaging.service';
-import { TeacherClass } from '../../../services/class.service';
-import { AuthService } from '../../../../core/auth/auth.service'; // To get user role
+import { MessagingService } from '../../../services/messaging';
+import { TeacherClass } from '../../../services/class';
+import { AuthService } from '../../../../core/auth/auth'; // To get user role
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-messaging-tool',
-  templateUrl: './messaging-tool.component.html',
-  styleUrls: ['./messaging-tool.component.scss']
+  templateUrl: './messaging-tool.html',
+  styleUrls: ['./messaging-tool.css']
 })
 export class MessagingToolComponent implements OnInit {
 

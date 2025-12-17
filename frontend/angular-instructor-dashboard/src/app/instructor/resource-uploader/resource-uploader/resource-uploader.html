@@ -1,1 +1,78 @@
-<p>resource-uploader works!</p>
+<div class="resource-uploader-container card p-4">
+  <h4 class="mb-3">Upload Course Resource</h4>
+  <p class="text-muted small">Allowed: PDF, Office, Images, Audio, Video (Max 50MB)</p>
+
+  <div class="upload-form">
+    <div class="form-group mb-3">
+      <label for="resourceTitle" class="form-label">Resource Title</label>
+      <input 
+        type="text" 
+        id="resourceTitle" 
+        #resourceTitle 
+        class="form-control" 
+        placeholder="e.g. Introduction to Physics PDF"
+      >
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="fileInput" class="form-label">Select File</label>
+      <input 
+        type="file" 
+        id="fileInput" 
+        #fileInput 
+        class="form-control"
+        (change)="uploadError = null"
+      >
+    </div>
+
+    <div class="d-grid gap-2">
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        [disabled]="uploadProgress > 0 && uploadProgress < 100"
+        (click)="uploadResource(fileInput.files![0], resourceTitle.value, lessonId)"> 
+        
+        @if (uploadProgress > 0 && uploadProgress < 100) {
+          <span><span class="spinner-border spinner-border-sm me-2"></span>Uploading...</span>
+        } @else {
+          <span>Upload Resource</span>
+        }
+      </button>
+    </div>
+  </div>
+
+  @if (uploadProgress > 0) {
+    <div class="progress-container mt-4">
+      <div class="d-flex justify-content-between mb-1">
+        <span class="small font-weight-bold">Upload Progress</span>
+        <span class="small font-weight-bold">{{ uploadProgress }}%</span>
+      </div>
+      <div class="progress" style="height: 10px;">
+        <div 
+          class="progress-bar progress-bar-striped progress-bar-animated" 
+          role="progressbar" 
+          [style.width.%]="uploadProgress"
+          [attr.aria-valuenow]="uploadProgress" 
+          aria-valuemin="0" 
+          aria-valuemax="100">
+        </div>
+      </div>
+
+      @if (uploadProgress === 100) {
+        <p class="text-success small mt-2">
+          <i class="bi bi-check-circle-fill"></i> Upload complete! Verifying security scan...
+        </p>
+      }
+    </div>
+  }
+
+  @if (uploadError) {
+    <div class="alert alert-danger mt-3" role="alert">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div class="flex-grow-1">{{ uploadError }}</div>
+        <button type="button" class="btn-close" (click)="uploadError = null"></button>
+      </div>
+    </div>
+  }
+</div>

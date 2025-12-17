@@ -1,7 +1,7 @@
 // src/app/instructor/services/resource.service.ts (Conceptual)
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEventType } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 // Assume a Django Resource model structure

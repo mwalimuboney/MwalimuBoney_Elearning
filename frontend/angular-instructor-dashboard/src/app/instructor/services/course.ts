@@ -1,232 +1,115 @@
-// src/app/instructor/services/course.service.ts (Conceptual)
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// --- Data Interfaces (Matching Django Serializers) ---
+/**
+ * --- DATA MODELS ---
+ * These interfaces precisely match the nested structure 
+ * of your Django REST Framework serializers.
+ */
 
-interface Lesson {
+export interface Resource {
   id?: number;
-  course: number; // Foreign Key to the parent course
+  lesson_id: number;
   title: string;
-  content: string; // The lesson body (HTML/markdown content)
-  order: number; // For sequencing lessons
+  file?: File;                // Used for frontend uploads
+  file_url?: string;          // Returned by Django/S3/Cloudinary
+  antivirus_status?: 'CLEAN' | 'PENDING' | 'INFECTED';
 }
 
-interface Course {
-  id?: number;
+export interface Lesson {
+  id: number;
+  course_id: number;
+  title: string;
+  summary?: string;
+  content?: string;           // Supports HTML/Markdown
+  is_preview: boolean;
+  order: number;
+  resources?: Resource[];     // Nested resources
+}
+
+export interface Course {
+  id: number;
   title: string;
   description: string;
-  category?: string; // If you have a category field
-  lessons: Lesson[]; // Nested lessons (often read-only on the course endpoint)
+  category?: string;
+  course_image_url?: string;
+  duration_hours?: number;
+  price?: number;
   is_published: boolean;
+  lesson_count?: number;      // Calculated by Django
+  enrollment_count?: number;  // Calculated by Django
+  lessons?: Lesson[];         // Nested lessons
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
-  private apiUrl = 'http://localhost:8000/api/'; // Base API URL
+  // Centralized API configuration
+  private readonly baseUrl = 'http://localhost:8000/api'; 
+  private readonly courseUrl = `${this.baseUrl}/courses/`;
 
   constructor(private http: HttpClient) { }
 
-  // --- Course CRUD (courses/CourseViewSet) ---
+  // --- COURSE OPERATIONS ---
 
-  /**
-   * Fetches all courses (Instructor's view).
-   * Endpoint: GET /api/courses/
-   */
+  /** Fetches all courses (typically filtered by Instructor in Backend via JWT) */
   getCourses(): Observable<Course[]> {
-    return this.http.get<Course[]>(`${this.apiUrl}courses/`);
+    return this.http.get<Course[]>(this.courseUrl);
   }
 
-  /**
-   * Fetches a single course detail.
-   * Endpoint: GET /api/courses/{id}/
-   */
+  /** Fetches full detail of one course including nested lessons */
   getCourse(id: number): Observable<Course> {
-    return this.http.get<Course>(`${this.apiUrl}courses/${id}/`);
+    return this.http.get<Course>(`${this.courseUrl}${id}/`);
   }
 
-  /**
-   * Creates a new course.
-   * Endpoint: POST /api/courses/
-   */
-  createCourse(courseData: Partial<Course>): Observable<Course> {
-    return this.http.post<Course>(`${this.apiUrl}courses/`, courseData);
+  createCourse(data: Partial<Course>): Observable<Course> {
+    return this.http.post<Course>(this.courseUrl, data);
   }
 
-  /**
-   * Updates an existing course (e.g., changing title, description, or publishing status).
-   * Endpoint: PATCH /api/courses/{id}/
-   */
   updateCourse(id: number, data: Partial<Course>): Observable<Course> {
-    return this.http.patch<Course>(`${this.apiUrl}courses/${id}/`, data);
+    return this.http.patch<Course>(`${this.courseUrl}${id}/`, data);
   }
 
-  /**
-   * Deletes a course.
-   * Endpoint: DELETE /api/courses/{id}/
-   */
   deleteCourse(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}courses/${id}/`);
+    return this.http.delete(`${this.courseUrl}${id}/`);
   }
 
-  // --- Lesson Management (courses/LessonViewSet) ---
+  // --- LESSON OPERATIONS ---
 
-  /**
-   * Fetches lessons for a specific course (using the query parameter filter).
-   * Endpoint: GET /api/lessons/?course={courseId}
-   */
+  /** Fetches lessons specifically for a course ID if not using nested serializers */
   getLessonsByCourse(courseId: number): Observable<Lesson[]> {
-    return this.http.get<Lesson[]>(`${this.apiUrl}lessons/?course=${courseId}`);
+    return this.http.get<Lesson[]>(`${this.baseUrl}/lessons/?course=${courseId}`);
   }
 
-  /**
-   * Creates a new lesson linked to a course.
-   * Endpoint: POST /api/lessons/
-   */
-  createLesson(lessonData: Lesson): Observable<Lesson> {
-    return this.http.post<Lesson>(`${this.apiUrl}lessons/`, lessonData);
+  createLesson(data: Partial<Lesson>): Observable<Lesson> {
+    // Note: Django usually expects 'course' (ID) in the payload
+    return this.http.post<Lesson>(`${this.baseUrl}/lessons/`, data);
   }
 
-  /**
-   * Updates an existing lesson (crucial for reordering or content changes).
-   * Endpoint: PATCH /api/lessons/{id}/
-   */
   updateLesson(id: number, data: Partial<Lesson>): Observable<Lesson> {
-    return this.http.patch<Lesson>(`${this.apiUrl}lessons/${id}/`, data);
+    return this.http.patch<Lesson>(`${this.baseUrl}/lessons/${id}/`, data);
   }
 
-  /**
-   * Deletes a lesson.
-   * Endpoint: DELETE /api/lessons/{id}/
-   */
   deleteLesson(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}lessons/${id}/`);
+    return this.http.delete(`${this.baseUrl}/lessons/${id}/`);
+  }
+
+  // --- RESOURCE & FILE MANAGEMENT ---
+
+  /**
+   * Uploads a file using FormData.
+   * This allows Django to receive the physical file and initiate the antivirus scan.
+   */
+  uploadResource(lessonId: number, title: string, file: File): Observable<Resource> {
+    const formData = new FormData();
+    formData.append('lesson_id', lessonId.toString());
+    formData.append('title', title);
+    formData.append('file', file, file.name);
+
+    return this.http.post<Resource>(`${this.baseUrl}/resources/`, formData);
   }
 }
-
-// src/app/instructor/services/course.service.ts (Additions)
-
-// Define structures for nested content
-urn this.http.post<Resource>(`${this.courseEndpoint}resources/`, formData);
-  }
-
-
-
-
-// // src/app/instructor/services/course.service.ts
-
-// import { Injectable } from '@angular/core';
-// import { HttpClient } from '@angular/common/http';
-// import { Observable } from 'rxjs';
-
-// // Define the core data structure (Must match Django's Course model)
-// export interface Course {
-//   id: number;
-//   title: string;
-//   description: string;
-//   is_published: boolean;
-//   created_at: Date;
-//   updated_at: Date;
-//   // Nested lists will be fetched separately or included in detail view
-//   lessons: any[]; 
-//   resources: any[];
-// }
-
-// @Injectable({ providedIn: 'root' })
-// export class CourseService {
-//   // Use the API URL base
-//   private apiUrl = 'http://localhost:8000/api'; 
-//   private courseEndpoint = `${this.apiUrl}/courses/`;
-
-//   constructor(private http: HttpClient) { }
-
-//   /**
-//    * GET: Retrieves all courses created by the current instructor (via JWT scope).
-//    * @returns Observable<Course[]>
-//    */
-//   getCourses(): Observable<Course[]> {
-//     // The backend endpoint GET /api/courses/ should automatically filter by the logged-in instructor
-//    
-// export interface Lesson {
-//   id?: number; // Optional for new lessons
-//   course_id: number;
-//   title: string;
-//   order: number;
-//   resources: Resource[]; // List of files/links within the lesson
-// }
-
-// export interface Resource {
-//     id?: number;
-//     lesson_id: number;
-//     title: string;
-//     file?: File; // For uploading new files
-//     file_url?: string; // For existing file display
-//     antivirus_status?: 'CLEAN' | 'PENDING' | 'INFECTED';
-// }
-
-// // ... inside CourseService class ...
-
-//   // LESSON MANAGEMENT
-//   createLesson(lessonData: Partial<Lesson>): Observable<Lesson> {
-//     return this.http.post<Lesson>(`${this.courseEndpoint}lessons/`, lessonData);
-//   }
-//   updateLesson(lessonId: number, data: Partial<Lesson>): Observable<Lesson> {
-//     return this.http.patch<Lesson>(`${this.apiUrl}/lessons/${lessonId}/`, data);
-//   }
-//   deleteLesson(lessonId: number): Observable<any> {
-//     return this.http.delete(`${this.apiUrl}/lessons/${lessonId}/`);
-//   }
-  
-//   // RESOURCE MANAGEMENT (Handles Antivirus File Upload)
-//   uploadResource(lessonId: number, title: string, file: File): Observable<Resource> {
-//     const formData = new FormData();
-//     formData.append('lesson_id', lessonId.toString());
-//     formData.append('title', title);
-//     // 'file' must match the field name in the Django ResourceSerializer
-//     formData.append('file', file, file.name); 
-
-//     // The backend AntivirusValidator will execute on this POST request.
-//     ret return this.http.get<Course[]>(this.courseEndpoint);
-// //   }
-
-//   /**
-//    * GET: Retrieves details for a single course.
-//    * @param id The course ID.
-//    * @returns Observable<Course>
-//    */
-//   getCourse(id: number): Observable<Course> {
-//     return this.http.get<Course>(`${this.courseEndpoint}${id}/`);
-//   }
-
-//   /**
-//    * POST: Creates a new course.
-//    * @param data Partial Course data (title, description).
-//    * @returns Observable<Course>
-//    */
-//   createCourse(data: Partial<Course>): Observable<Course> {
-//     return this.http.post<Course>(this.courseEndpoint, data);
-//   }
-
-//   /**
-//    * PATCH: Updates existing course details (used for edit and publishing toggle).
-//    * @param id The course ID.
-//    * @param data The updated fields.
-//    * @returns Observable<Course>
-//    */
-//   updateCourse(id: number, data: Partial<Course>): Observable<Course> {
-//     return this.http.patch<Course>(`${this.courseEndpoint}${id}/`, data);
-//   }
-
-//   /**
-//    * DELETE: Deletes a course permanently.
-//    * @param id The course ID.
-//    * @returns Observable<any>
-//    */
-//   deleteCourse(id: number): Observable<any> {
-//     return this.http.delete(`${this.courseEndpoint}${id}/`);
-//   }
-// }

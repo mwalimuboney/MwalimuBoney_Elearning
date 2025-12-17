@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Course } from './course.service'; 
+import { Course } from './course'; 
 
 // Define data structures needed for the roster
 export interface ClassRosterStudent {

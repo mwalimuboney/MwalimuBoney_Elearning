@@ -1,0 +1,128 @@
+/* Layout Container */
+.course-editor-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header Styling */
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-info h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.course-id {
+  font-family: 'Courier New', Courier, monospace;
+  background: #f1f3f5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Tabs Styling */
+.editor-tabs {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  min-height: 60vh;
+}
+
+.tab-content {
+  padding: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Metadata Form & Cards */
+.w-100 {
+  width: 100%;
+}
+
+.publish-card, .extraction-card {
+  border: 1px solid #edf2f7;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  background-color: #f8fafc;
+}
+
+.publish-card mat-card-title, .extraction-card mat-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Locked State (For New Courses) */
+.locked-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem;
+  color: #a0aec0;
+  text-align: center;
+}
+
+.locked-state mat-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* AI Highlight Box inside TinyMCE */
+::ng-deep .ai-box {
+  background-color: #f0f7ff;
+  border-left: 4px solid #007bff;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+}
+
+/* Responsive Grid Fixes */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.col-md-8 { flex: 2; min-width: 300px; }
+.col-md-4 { flex: 1; min-width: 250px; }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .editor-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .header-actions {
+    width: 100%;
+  }
+  
+  .header-actions button {
+    flex: 1;
+  }
+}

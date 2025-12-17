@@ -1,0 +1,43 @@
+.lesson-manager {
+  padding-top: 1rem;
+}
+
+.actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem;
+  color: #999;
+}
+
+.empty-state mat-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+  opacity: 0.3;
+}
+
+.lesson-panel {
+  margin-bottom: 10px;
+  border: 1px solid #eee !important;
+  box-shadow: none !important;
+}
+
+.lesson-details {
+  padding: 1rem 0;
+}
+
+.lesson-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+  justify-content: flex-end;
+}
+
+.me-2 { margin-right: 8px; }

@@ -13,14 +13,17 @@
 // src/app/instructor/course-manager/course-manager.component.ts (Conceptual)
 
 import { Component, OnInit } from '@angular/core';
-import { CourseService } from '../services/course.service';
+import { CourseService, Course} from '../../services/course';
 import { Observable } from 'rxjs';
-import { Course } from '../services/course.service'; // Import the interface
-
+import { tap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-course-manager',
-  templateUrl: './course-manager.component.html',
-  styleUrls: ['./course-manager.component.scss']
+  templateUrl: './course-manager.html',
+  styleUrls: ['./course-manager.css'],
+  imports: [CommonModule]
 })
 export class CourseManagerComponent implements OnInit {
 

@@ -15,13 +15,13 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ReportService } from '../../../services/report.service'; 
+import { ReportService } from '../../../services/report'; 
 import { saveAs } from 'file-saver'; // A common library used for saving blobs/files client-side
 
 @Component({
   selector: 'app-student-grading-review',
-  templateUrl: './student-grading-review.component.html',
-  styleUrls: ['./student-grading-review.component.scss']
+  templateUrl: './student-grading-review.html',
+  styleUrls: ['./student-grading-review.css']
 })
 export class StudentGradingReviewComponent implements OnInit {
 

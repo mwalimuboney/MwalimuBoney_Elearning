@@ -15,7 +15,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ClassService, TeacherClass, ClassRosterStudent } from '../../../services/class';
 import { Observable, Subject, combineLatest, of } from 'rxjs';
-import { switchMap, debounceTime, distinctUntilChanged, startWith, tap, map, catchError } from 'rxjs/operators';
+import { switchMap, debounceTime, distinctUntilChanged, startWith, tap, catchError } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 
 @Component({
