@@ -1,18 +1,3 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-messaging-tool',
-//   imports: [],
-//   templateUrl: './messaging-tool.html',
-//   styleUrl: './messaging-tool.css',
-// })
-// export class MessagingTool {
-
-// }
-
-
-
-// src/app/instructor/components/messaging/messaging-tool/messaging-tool.component.ts
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -22,11 +7,52 @@ import { AuthService } from '../../../../core/auth/auth'; // To get user role
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+import { MatDialog } from '@angular/material/dialog';
+// import { AdminUser } from '../../../admin/admin-users';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
+import { MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle } from '@angular/material/card';
+import { UserRole } from '../../../../core/role';
+import { MatOption } from '@angular/material/select';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+
+
 @Component({
   selector: 'app-messaging-tool',
   templateUrl: './messaging-tool.html',
-  styleUrls: ['./messaging-tool.css']
+  styleUrls: ['./messaging-tool.css'],
+  imports: [
+    MatDialogModule, 
+    MatFormFieldModule, 
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatSnackBarModule,
+    MatSlideToggle,
+    CommonModule,
+    FormsModule,
+    MatIcon,
+    MatCard,
+    MatOption,
+    MatCardHeader,
+    MatCardSubtitle,
+    MatCardTitle,
+    MatCardContent,
+    MatProgressSpinner,
+    
+    
+  ]
 })
+
+
 export class MessagingToolComponent implements OnInit {
 
   messageForm!: FormGroup;
@@ -43,14 +69,16 @@ export class MessagingToolComponent implements OnInit {
     { value: 'USER', label: 'Specific User (Student/Parent/Teacher)' },
   ];
 
+
+  
   constructor(
     private fb: FormBuilder,
     private messagingService: MessagingService,
     private authService: AuthService
   ) {
     // Check roles immediately upon component construction
-    this.isTeacher = this.authService.userRole === 'TEACHER';
-    this.isAdmin = this.authService.userRole === 'ADMINISTRATOR';
+    this.isTeacher = this.authService.UserRole === 'TEACHER';
+    this.isAdmin = this.authService.UserRole === 'ADMINISTRATOR';
 
     if (this.isAdmin) {
       // Admins get the highest privilege option
@@ -76,7 +104,39 @@ export class MessagingToolComponent implements OnInit {
     this.messageForm.get('scope_type')?.valueChanges.pipe(
       tap(scope => this.handleScopeChange(scope))
     ).subscribe();
+
+
+  // Subscribe to the stream provided by AuthService
+  this.authService.userProfile$.subscribe({
+    next: (profile) => {
+      if (profile) {
+        // Use the Enum imported at the top for comparison
+        this.isTeacher = profile.role === UserRole.Teacher;
+        this.isAdmin = profile.role === UserRole.Administrator || 
+                       profile.role === UserRole.SuperAdmin;
+
+        if (this.isAdmin) {
+          this.addAdminScopeOptions();
+        }
+        
+        if (this.isTeacher || this.isAdmin) {
+          this.teacherClasses$ = this.messagingService.getTeacherTargetClasses();
+        }
+      }
+    }
+  });
+}
+
+private addAdminScopeOptions() {
+  const hasGlobal = this.SCOPE_OPTIONS.some(o => o.value === 'GLOBAL_PUBLIC');
+  if (!hasGlobal) {
+    this.SCOPE_OPTIONS.unshift({ 
+      value: 'GLOBAL_PUBLIC', 
+      label: 'Global: Public Announcement (All Schools)' 
+    });
   }
+}
+  
   
   /**
    * Adjusts validation and UI based on the selected scope.

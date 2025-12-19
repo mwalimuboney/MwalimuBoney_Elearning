@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegistrationValidators } from './registration-validators';
+import { RegistrationValidatorsComponent } from './registration-validators';
 
-describe('RegistrationValidators', () => {
-  let component: RegistrationValidators;
-  let fixture: ComponentFixture<RegistrationValidators>;
+describe('RegistrationValidatorsComponent', () => {
+  let component: RegistrationValidatorsComponent;
+  let fixture: ComponentFixture<RegistrationValidatorsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationValidators]
+      imports: [RegistrationValidatorsComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RegistrationValidators);
+    fixture = TestBed.createComponent(RegistrationValidatorsComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

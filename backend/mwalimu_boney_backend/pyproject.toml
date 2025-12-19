@@ -4,3 +4,7 @@
 # Add your project's root directory ("." is the current directory) 
 # to the execution environment's extra paths.
 extraPaths = ["."]
+
+reportMissingImports = true
+reportMissingModuleSource = false
+typeCheckingMode = "basic" # or "off" if it's too strict for Django

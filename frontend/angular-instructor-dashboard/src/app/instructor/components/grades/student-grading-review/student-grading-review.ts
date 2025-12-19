@@ -1,27 +1,20 @@
-// import { Component } from '@angular/core';
 
-// @Component({
-//   selector: 'app-student-grading-review',
-//   imports: [],
-//   templateUrl: './student-grading-review.html',
-//   styleUrl: './student-grading-review.css',
-// })
-// export class StudentGradingReview {
-
-// }
-
-
-// src/app/instructor/components/grades/student-grading-review/student-grading-review.component.ts
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ReportService } from '../../../services/report'; 
 import { saveAs } from 'file-saver'; // A common library used for saving blobs/files client-side
-
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // For ngModel binding
 @Component({
   selector: 'app-student-grading-review',
   templateUrl: './student-grading-review.html',
-  styleUrls: ['./student-grading-review.css']
+  styleUrls: ['./student-grading-review.css'],
+
+  imports: [
+    CommonModule,
+    FormsModule
+  ]
 })
 export class StudentGradingReviewComponent implements OnInit {
 

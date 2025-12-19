@@ -9,7 +9,8 @@ class School(models.Model):
     name = models.CharField(max_length=255, unique=True)
     admin_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='schools_managed')
     is_public = models.BooleanField(default=False) # For inter-school visibility (e.g., interschool exams)
-
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
     official_lat = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     official_lon = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     # Define a safe radius in meters for the testing center
@@ -78,7 +79,15 @@ class FRSettings(models.Model):
         return f'FR Settings for {self.school.name}'
 
 
+class Department(models.Model):
+    school = models.ForeignKey(School, on_current_link=models.CASCADE, related_name='departments')
+    name = models.CharField(max_length=255)
+    head_of_department = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.name} - {self.school.name}"
 #Every secure API ( CourseViewSet, ExamViewset, ExamManagerViewSet, ManualGardeViewset) MUST implement this logic to prevent cross-school data leakage.
 # Django ViewSet Example (Applies to ALL data-fetching ViewSets)
 

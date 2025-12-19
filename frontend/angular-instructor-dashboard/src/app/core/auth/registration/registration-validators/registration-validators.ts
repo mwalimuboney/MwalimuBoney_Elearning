@@ -1,53 +1,73 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-registration-validators',
-//   imports: [],
-//   templateUrl: './registration-validators.html',
-//   styleUrl: './registration-validators.css',
-// })
-// export class RegistrationValidators {
-
-// }
-// src/app/core/auth/registration/registration.component.ts (Modification)
-
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-// Import the necessary validator and service
-import { uniqueCheckValidator } from '../registration-validators'; 
-import { AuthService } from './auth';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router'; 
+import { RouterLink } from '@angular/router';
+// FIX: Import both the Class and the Function from the auth file
+import { AuthService, uniqueCheckValidator } from '../../../services/registration-validators';
 
-@Component({ /* ... */ })
-export class RegistrationComponent implements OnInit {
+@Component({ 
+  selector: 'app-registration',
+  templateUrl: './registration-validators.html',
+  styleUrl: './registration-validators.css',
+  standalone: true, 
+  imports: [ReactiveFormsModule, RouterLink]
+})
+export class RegistrationValidatorsComponent implements OnInit {
   registrationForm!: FormGroup;
+  isSubmitting = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {}
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService, // Injected as a class
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.registrationForm = this.fb.group({
-      username: [
-        '', 
-        [Validators.required, Validators.minLength(4)], 
-        [uniqueCheckValidator(this.authService, 'username')] // ASYNC Validator
+      username: ['', 
+        { 
+          validators: [Validators.required, Validators.minLength(4)], 
+          // uniqueCheckValidator is now available as a standalone function
+          asyncValidators: [uniqueCheckValidator(this.authService, 'username')],
+          updateOn: 'blur' 
+        }
       ],
-      email: [
-        '', 
-        [Validators.required, Validators.email],
-        [uniqueCheckValidator(this.authService, 'email')] // ASYNC Validator
+      email: ['', 
+        { 
+          validators: [Validators.required, Validators.email], 
+          asyncValidators: [uniqueCheckValidator(this.authService, 'email')],
+          updateOn: 'blur' 
+        }
       ],
-      // Assumes phoneNumber is managed in a separate field or integrated here
-      phoneNumber: [
-        '',
-        [Validators.required, Validators.pattern(/^\+[1-9]\d{1,14}$/)], // Basic international format
-        [uniqueCheckValidator(this.authService, 'phoneNumber')] // ASYNC Validator
+      phoneNumber: ['', 
+        { 
+          validators: [Validators.required, Validators.pattern(/^\+[1-9]\d{1,14}$/)], 
+          asyncValidators: [uniqueCheckValidator(this.authService, 'phoneNumber')],
+          updateOn: 'blur' 
+        }
       ],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      // ... other fields
+      password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
+
+  onSubmit(): void {
+  if (this.registrationForm.invalid) return;
+    
+  this.isSubmitting = true;
   
-  // Getter to access form controls easily in the template
+  this.authService.register(this.registrationForm.value).subscribe({
+    next: () => {
+      this.isSubmitting = false;
+      this.router.navigate(['/login']); 
+    },
+    // Ensure this parameter is named 'err' or something different 
+    // to avoid clashing with the global 'Error' class
+    error: (err: any) => { 
+      console.error('Registration failed', err);
+      this.isSubmitting = false;
+    }
+  });
+}
   get f() { return this.registrationForm.controls; }
-  
-  // ... submission logic
+
 }

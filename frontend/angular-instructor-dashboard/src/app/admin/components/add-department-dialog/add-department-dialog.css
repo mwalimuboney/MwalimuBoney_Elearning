@@ -1,0 +1,9 @@
+/* Custom SnackBar styling */
+.success-snackbar {
+  background-color: #2e7d32 !important; /* Material Green 800 */
+  color: white !important;
+}
+
+.success-snackbar .mat-mdc-snack-bar-label {
+  font-weight: 500;
+}

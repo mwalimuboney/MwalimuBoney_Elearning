@@ -2,8 +2,8 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SchoolManagerComponent } from './components/school-manager/school-manager.component';
-import { AdminUsersComponent } from './components/admin-users/admin-users.component';
+import { SchoolManagerComponent } from '../admin/components/school-manager/school-manager';
+import { AdminUsersComponent } from '../admin/components/admin-users/admin-users';
 import { RoleGuard } from '../core/auth/guards/role.guard'; // Use existing guard
 
 const routes: Routes = [

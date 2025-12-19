@@ -7,11 +7,9 @@ import { CourseEditorComponent } from './course-editor/course-editor';
 import { ExamBuilderComponent } from './components/exams/exam-builder/exam-builder/exam-builder';
 import { AttemptReviewComponent } from './components/exams/attempt-review/attempt-review';
 import { MessagingToolComponent } from './components/messaging/messaging-tool/messaging-tool';
-import { DashboardHomeComponent } from './components/dashboard/dashboard-home/dashboard-home';
+
 
 const routes: Routes = [
-  // Instructor Dashboard Home
-  { path: '', component: DashboardHomeComponent },
 
   // Course Content Management
   { path: 'courses', component: CourseManagerComponent },

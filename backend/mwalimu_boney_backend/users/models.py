@@ -5,12 +5,23 @@ from django.contrib.auth.models import User
 from school.models import School, Class
 
 # Define the user roles as choices for clean data storage
-# 2. Roles (New: PARENT)
-ROLE_CHOICES = [
-        ('STUDENT', 'Student'), ('TEACHER', 'Teacher'), 
-        ('ADMINISTRATOR', 'Administrator'), ('PARENT', 'Parent')
-]
+from django.db import models
+from django.contrib.auth.models import User
+from school.models import School, Class
 
+# Import Department from your school models (adjust the import path if necessary)
+# from school.models import Department 
+
+# Updated Roles to include specific Administrative tiers
+ROLE_CHOICES = [
+    ('STUDENT', 'Student'), 
+    ('TEACHER', 'Teacher'), 
+    ('PARENT', 'Parent'),
+    ('SUPER_ADMIN', 'Super Admin'),   # Global access
+    ('SCHOOL_ADMIN', 'School Admin'), # Institutional access
+    ('DEPT_ADMIN', 'Dept Admin'),     # Departmental access
+    ('ADMINISTRATOR', 'Administrator'), # General admin (kept for compatibility)
+]
 
 class UserProfile(models.Model):
     """
@@ -18,7 +29,7 @@ class UserProfile(models.Model):
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     phone_number = models.CharField(max_length=20, unique=True, blank=True, null=True)
-    # 1. Unique Assessment Number
+    
     assessment_number = models.CharField(
         max_length=20, 
         unique=True, 
@@ -27,13 +38,11 @@ class UserProfile(models.Model):
         help_text="Unique ID generated upon first exam registration."
     )
     
-    # 2. Whitelisting/Blacklisting Status
     is_whitelisted = models.BooleanField(
         default=True,
         help_text="If False, the assessment number is blocked from starting exams."
     )
     
-    # 3. Photo Storage (Used for retrieval verification)
     passport_photo = models.ImageField(
         upload_to='user_passport_photos/', 
         null=True, 
@@ -41,40 +50,43 @@ class UserProfile(models.Model):
         help_text="High-resolution photo for identity verification."
     )
 
-    # Stores the primary biometric data (facial template/vector/descriptor)
-    # This should be a secure hash or vector, NOT the raw image.
     facial_template = models.BinaryField(
         null=True, 
         blank=True,
         help_text="Secured biometric template for facial recognition."
     )
-    # 1. Tenancy/Class Links
+
+    # Tenancy Links
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True, related_name='users_in_school')
+    
+    # NEW: Department Link (Added to support DEPT_ADMIN role)
+    department = models.ForeignKey(
+        'school.Department', # Assuming Department is in school.models
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='dept_users'
+    )
+    
     current_class = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, blank=True, related_name='class_students')
-    xp = models.IntegerField(default=0) # Experience Points
+    xp = models.IntegerField(default=0) 
     level = models.IntegerField(default=1)
     
-    # Core Role Field
+    # Core Role Field (Updated with new ROLE_CHOICES)
     role = models.CharField(
-        max_length=15, 
+        max_length=20, 
         choices=ROLE_CHOICES, 
         default='STUDENT', 
         verbose_name='Account Role'
     )
     
-    # 3. Family Link
     parent = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
 
-    # 4. Private Contact Info (ADMIN-ONLY VIEW)
-    # We move the private phone number here, enforcing uniqueness.
     private_phone_number = models.CharField(max_length=20, unique=True, blank=True, null=True)
     
-    # Public Profile Fields
     title = models.CharField(max_length=50, blank=True, verbose_name='Title (e.g., BSc Student)')
     bio = models.TextField(blank=True, verbose_name='User Biography')
     
-    # Social Feature: User Following
-    # Stores users that *this* user is following.
     follows = models.ManyToManyField(
         'self', 
         symmetrical=False, 
@@ -84,7 +96,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} ({self.role}) - {self.school.name if self.school else 'No School'}"
-    
 
 class FRSettings(models.Model):
     # Reference the School model imported from school.models above

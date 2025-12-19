@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { AuthService } from '../auth';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -34,8 +36,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
-    // private authService: AuthService // Inject your actual service here
+    private router: Router,
+    private authService: AuthService // Inject your actual service here
   ) {}
 
   ngOnInit(): void {
@@ -44,24 +46,31 @@ export class LoginComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
+onSubmit(): void {
+  if (this.loginForm.invalid) return;
 
-  onSubmit(): void {
-    if (this.loginForm.invalid) return;
+  this.isLoading = true;
+  this.errorMessage = null;
 
-    this.isLoading = true;
-    this.errorMessage = null;
-
-    // Simulate API Call - Replace with this.authService.login()
-    setTimeout(() => {
-      const { email, password } = this.loginForm.value;
+  this.authService.login(this.loginForm.value).subscribe({
+    next: (_: any) => {
+      this.isLoading = false;
+      this.router.navigate(['/instructor/dashboard']);
+    },
+    error: (err: HttpErrorResponse) => {
+      this.isLoading = false;
       
-      if (email === 'admin@mwalimu.com' && password === 'password123') {
-        localStorage.setItem('access_token', 'mock-jwt-token'); // Simple mock
-        this.router.navigate(['/instructor/dashboard']);
+      // Check if backend is completely unreachable (status 0)
+      if (err.status === 0) {
+        this.errorMessage = 'The server is currently unreachable. Please check your internet or try again later.';
       } else {
-        this.errorMessage = 'Invalid email or password. Please try again.';
-        this.isLoading = false;
+        // Handle specific Django/Djoser errors
+        this.errorMessage = err.error?.detail || 
+                           err.error?.non_field_errors?.[0] || 
+                           'Invalid email or password.';
       }
-    }, 1500);
-  }
+      console.error('Login Error:', err);
+    }
+  });
+}
 }

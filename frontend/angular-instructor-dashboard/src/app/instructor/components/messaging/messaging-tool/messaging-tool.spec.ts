@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MessagingTool } from './messaging-tool';
+import { MessagingToolComponent } from './messaging-tool';
 
-describe('MessagingTool', () => {
-  let component: MessagingTool;
-  let fixture: ComponentFixture<MessagingTool>;
-
+describe('MessagingToolComponent', () => {
+  let component: MessagingToolComponent;
+  let fixture: ComponentFixture<MessagingToolComponent>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MessagingTool]
+      imports: [MessagingToolComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MessagingTool);
+    fixture = TestBed.createComponent(MessagingToolComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

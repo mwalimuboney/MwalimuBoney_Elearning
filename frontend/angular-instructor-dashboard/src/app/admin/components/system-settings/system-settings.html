@@ -1,1 +1,9 @@
-<p>system-settings works!</p>
+<h3>🔊 System Audio Alerts</h3>
+    <p>Upload and test audio files (.mp3, .ogg) for key system events.</p>
+
+    <div *ngFor="let setting of soundSettings">
+      <label>{{ setting.name }}:</label>
+      <input type="file" (change)="handleFileUpload($event, setting.eventKey || setting.event_key)" accept="audio/*">
+      <audio *ngIf="setting.url" [src]="getSafeUrl(setting.url)" controls></audio>
+      <button (click)="testSound(setting.url)">Test Play</button>
+    </div>

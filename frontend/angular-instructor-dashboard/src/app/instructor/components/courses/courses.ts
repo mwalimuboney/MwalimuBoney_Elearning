@@ -32,7 +32,7 @@ export class CoursesComponent  implements OnInit {
 
     // Use the service to get the courses. 
     // The service handles the API interaction with your Django backend.
-    this.courses$ = this.courseService.getAllCourses(); 
+    this.courses$ = this.courseService.getCourses(); 
 
     // Optional: Subscribe here if you need to perform actions after data arrives,
     // but using the async pipe in the template is often cleaner.

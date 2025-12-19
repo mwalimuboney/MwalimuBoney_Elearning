@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
 
 // 1. Import the child component classes
 import { LessonEditorListComponent } from '../components/lesson-editor-list/lesson-editor-list';
-import { ResourceUploaderComponent } from '../resource-uploader/resource-uploader/resource-uploader';
+// import { ResourceUploaderComponent } from '../resource-uploader/resource-uploader/resource-uploader';
 
 @Component({
   selector: 'app-course-editor',
@@ -38,7 +38,7 @@ import { ResourceUploaderComponent } from '../resource-uploader/resource-uploade
     ReactiveFormsModule, // Required for [formGroup]
     RouterModule,        // Required for [routerLink]
     LessonEditorListComponent,
-    ResourceUploaderComponent
+    // ResourceUploaderComponent
   
   ]
 })

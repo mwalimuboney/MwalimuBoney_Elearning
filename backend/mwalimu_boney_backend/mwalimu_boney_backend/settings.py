@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta # Don't forget this import at the top
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -73,6 +74,26 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+
+# Configure GDAL
+import os
+
+# 1. Path to your QGIS bin directory
+QGIS_BIN = r'C:\Program Files\QGIS 3.44.5\bin'
+
+if os.path.exists(QGIS_BIN):
+    # This is critical for Python 3.8+ on Windows
+    os.add_dll_directory(QGIS_BIN)
+    
+    # Force these specific variables
+    GDAL_LIBRARY_PATH = os.path.join(QGIS_BIN, 'gdal312.dll')
+    GEOS_LIBRARY_PATH = os.path.join(QGIS_BIN, 'geos_c.dll')
+    
+    # Data folders
+    os.environ['PROJ_LIB'] = r'C:\Program Files\QGIS 3.44.5\share\proj'
+    os.environ['GDAL_DATA'] = r'C:\Program Files\QGIS 3.44.5\share\gdal'
+
 # During development, allow all origins for simplicity. 
 # In production, change this to a specific list of domains (e.g., 'http://yourreactapp.com')
 CORS_ALLOW_ALL_ORIGINS = True

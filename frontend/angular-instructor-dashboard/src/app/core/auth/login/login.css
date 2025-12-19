@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #045ee6 0%, #c3cfe2 100%);
 }
 
 .login-card {
@@ -60,3 +60,32 @@
 }
 
 .text-center { text-align: center; }
+
+
+.auth-switch {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #edf2f7;
+    text-align: center;
+}
+
+.auth-switch p {
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+.auth-switch a {
+    color: #4299e1;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.auth-switch a:hover {
+    color: #0509ec;
+    text-decoration: underline;
+    cursor: pointer;
+    background: #51e90b;
+}
+
+

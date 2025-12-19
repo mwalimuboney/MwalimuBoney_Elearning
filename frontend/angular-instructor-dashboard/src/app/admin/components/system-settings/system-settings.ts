@@ -1,37 +1,21 @@
-// import { Component } from '@angular/core';
 
-// @Component({
-//   selector: 'app-system-settings',
-//   imports: [],
-//   templateUrl: './system-settings.html',
-//   styleUrl: './system-settings.css',
-// })
-// export class SystemSettings {
-
-// }
-
-// src/app/admin/components/system-settings/sound-settings.component.ts
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sound-settings',
-  template: `
-    <h3>🔊 System Audio Alerts</h3>
-    <p>Upload and test audio files (.mp3, .ogg) for key system events.</p>
-
-    <div *ngFor="let setting of soundSettings">
-      <label>{{ setting.name }}:</label>
-      <input type="file" (change)="handleFileUpload($event, setting.eventKey || setting.event_key)" accept="audio/*">
-      <audio *ngIf="setting.url" [src]="getSafeUrl(setting.url)" controls></audio>
-      <button (click)="testSound(setting.url)">Test Play</button>
-    </div>
-  `
+  templateUrl: './system-settings.html',
+  styleUrl: './system-settings.css',
+  imports: [ 
+    CommonModule
+  ],
+ 
 })
 export class SoundSettingsComponent implements OnInit {
-  soundSettings: Array<{ name: string; eventKey: string; event_key?: string; url?: string }> = [];
+  soundSettings: Array<{ name: string; eventKey: string; event_key: string; url: string }> = [];
   
   constructor(private http: HttpClient, private sanitizer: DomSanitizer) {}
   

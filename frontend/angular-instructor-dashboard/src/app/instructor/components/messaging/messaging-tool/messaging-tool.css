@@ -1,0 +1,102 @@
+/* Container to center the card on the page */
+.messaging-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  background-color: #fafafa; /* Light grey background for the page */
+  min-height: calc(100vh - 64px); /* Adjust based on your navbar height */
+}
+
+/* Limit the width of the card for readability */
+mat-card {
+  width: 100%;
+  max-width: 650px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  padding: 8px;
+}
+
+mat-card-header {
+  margin-bottom: 16px;
+}
+
+mat-card-title {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.5rem !important;
+}
+
+mat-card-subtitle {
+  color: #666;
+}
+
+/* Form layout */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Utility class to make inputs stretch to full width */
+.full-width {
+  width: 100%;
+}
+
+/* Section for the slide toggle */
+.toggle-section {
+  margin: 8px 0 16px 0;
+  padding: 12px 16px;
+  background-color: #f1f3f4; /* Subtle background to separate toggle from inputs */
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+}
+
+/* Action button area */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-bottom: 8px;
+}
+
+/* Style for the button with icon/spinner */
+button[type="submit"] {
+  min-width: 160px;
+  height: 48px;
+  border-radius: 8px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+/* Alignment inside the button */
+ng-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+mat-icon {
+  margin-right: 4px;
+}
+
+/* Ensure spinner is centered in the button */
+mat-spinner {
+  margin: 0 auto;
+}
+
+/* Responsive adjustment for mobile */
+@media (max-width: 600px) {
+  .messaging-container {
+    padding: 12px;
+  }
+  
+  .actions {
+    justify-content: center;
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+  }
+}

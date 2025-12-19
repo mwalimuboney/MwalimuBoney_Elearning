@@ -1,0 +1,47 @@
+<div class="profile-container">
+  @if (userProfile$ | async; as profile) {
+    <mat-card class="profile-card">
+      <div class="profile-header">
+        <div class="avatar-circle">
+          {{ profile.username[0].toUpperCase() }}
+        </div>
+        <h2>{{ profile.username }}</h2>
+        <span class="role-badge" [ngClass]="profile.role.toLowerCase()">
+          {{ formatRole(profile.role) }}
+        </span>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <mat-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <mat-icon>person</mat-icon>
+            <div>
+              <label>Username</label>
+              <p>{{ profile.username }}</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon>verified_user</mat-icon>
+            <div>
+              <label>Account Level</label>
+              <p>{{ formatRole(profile.role) }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-stroked-button color="primary" aria-label="Edit Profile">
+          <mat-icon>edit</mat-icon> Edit Profile
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  } @else {
+    <div class="loading-state">
+      <p>Loading profile information...</p>
+    </div>
+  }
+</div>

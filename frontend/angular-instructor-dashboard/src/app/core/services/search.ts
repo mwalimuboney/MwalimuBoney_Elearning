@@ -42,11 +42,6 @@ export class AuthService {
             { params: params }
         );
     }
-    // src/app/core/services/search.service.ts
-    searchAdminData(query: string): Observable<any[]> {
-    // Example: Searching Users, Courses, and Exams
-      return this.http.get<any[]>(`${this.apiUrl}/search/admin/users/?q=${query}`);
-    }
-
+   
     // ... existing login, logout, fetchUserProfile methods
 }

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { Department } from '../../admin/department';
+import { AdminUser } from '../../admin/admin-users';
 /**
  * --- DATA MODELS ---
- * These interfaces precisely match the nested structure 
+ * These interfaces precisely match the nested structure
  * of your Django REST Framework serializers.
  */
 
@@ -12,8 +13,8 @@ export interface Resource {
   id?: number;
   lesson_id: number;
   title: string;
-  file?: File;                // Used for frontend uploads
-  file_url?: string;          // Returned by Django/S3/Cloudinary
+  file?: File; // Used for frontend uploads
+  file_url?: string; // Returned by Django/S3/Cloudinary
   antivirus_status?: 'CLEAN' | 'PENDING' | 'INFECTED';
 }
 
@@ -22,10 +23,10 @@ export interface Lesson {
   course_id: number;
   title: string;
   summary?: string;
-  content?: string;           // Supports HTML/Markdown
+  content?: string; // Supports HTML/Markdown
   is_preview: boolean;
   order: number;
-  resources?: Resource[];     // Nested resources
+  resources?: Resource[]; // Nested resources
 }
 
 export interface Course {
@@ -37,22 +38,34 @@ export interface Course {
   duration_hours?: number;
   price?: number;
   is_published: boolean;
-  lesson_count?: number;      // Calculated by Django
-  enrollment_count?: number;  // Calculated by Django
-  lessons?: Lesson[];         // Nested lessons
+  lesson_count?: number; // Calculated by Django
+  enrollment_count?: number; // Calculated by Django
+  lessons?: Lesson[]; // Nested lessons
   created_at?: Date;
   updated_at?: Date;
 }
 
+export interface School {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  logo_url?: string;
+  admin_email: string;
+  is_active: boolean;
+  total_students?: number; // Calculated field from Django
+  total_instructors?: number;
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CourseService {
   // Centralized API configuration
-  private readonly baseUrl = 'http://localhost:8000/api'; 
+  private readonly baseUrl = 'http://localhost:8000/api';
   private readonly courseUrl = `${this.baseUrl}/courses/`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // --- COURSE OPERATIONS ---
 
@@ -112,4 +125,31 @@ export class CourseService {
 
     return this.http.post<Resource>(`${this.baseUrl}/resources/`, formData);
   }
+
+  
+  getSchools(): Observable<School[]> {
+    return this.http.get<School[]>(`${this.baseUrl}/schools/`);
+  }
+
+  getSchoolDetails(id: number): Observable<School> {
+    return this.http.get<School>(`${this.baseUrl}/schools/${id}/`);
+  }
+
+  createSchool(data: Partial<School>): Observable<School> {
+    return this.http.post<School>(`${this.baseUrl}/schools/`, data);
+  }
+
+  // Inside src/app/services/course.ts
+createDepartment(data: Partial<Department>): Observable<Department> {
+  return this.http.post<Department>(`${this.baseUrl}/departments/`, data);
+}
+
+getDepartments(schoolId: number): Observable<Department[]> {
+  return this.http.get<Department[]>(`${this.baseUrl}/departments/?school_id=${schoolId}`);
+}
+
+getAdminUsers(): Observable<AdminUser[]> {
+  return this.http.get<AdminUser[]>(`${this.baseUrl}/admin-users/`);
+
+}
 }
