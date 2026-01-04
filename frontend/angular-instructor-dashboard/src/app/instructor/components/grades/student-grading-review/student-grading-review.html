@@ -1,0 +1,22 @@
+<div class="grade-header">
+    <h3>Reviewing Grades for: {{ studentName }}</h3>
+    
+    <div class="report-controls">
+        <label>Start Date:</label>
+        <input type="date" placeholder="Start Date" [(ngModel)]="reportStartDate">
+        
+        <label>End Date:</label>
+        <input type="date" placeholder="End Date" [(ngModel)]="reportEndDate">
+        
+        <button type="submit"
+            class="btn btn-primary"
+            (click)="generateAndDownloadReport()" 
+            [disabled]="isGenerating || !studentId">
+            
+            <i class="fa fa-file-pdf"></i> 
+            {{ isGenerating ? 'Generating Report...' : 'Generate Report Card (PDF)' }}
+        </button>
+    </div>
+</div>
+
+<hr>

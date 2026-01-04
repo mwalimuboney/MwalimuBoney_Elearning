@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Register New Department</h2>
+
+<mat-dialog-content class="mat-typography">
+  <form [formGroup]="deptForm" class="d-flex flex-column gap-3 mt-2">
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Department Name</mat-label>
+      <input matInput formControlName="name" placeholder="e.g., Computer Science">
+      @if (deptForm.get('name')?.invalid) {
+        <mat-error>Name is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Head of Department</mat-label>
+      <input matInput formControlName="head_of_department" placeholder="Full Name">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+<textarea 
+        matInput 
+        formControlName="description" 
+        placeholder="Brief overview of the department"
+        rows="3"></textarea>    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="deptForm.invalid" (click)="save()">
+    Save Department
+  </button>
+</mat-dialog-actions>

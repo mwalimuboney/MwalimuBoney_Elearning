@@ -1,0 +1,60 @@
+<div class="review-container">
+  <mat-card class="summary-card mb-4">
+    <mat-card-content>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2>{{ examTitle }}</h2>
+          <p class="text-muted">Attempt Review for: <strong>{{ studentName }}</strong></p>
+        </div>
+        <div class="score-display">
+          <span class="score-number">{{ totalScore }} / {{ maxPossibleScore }}</span>
+          <mat-chip-listbox>
+            <mat-chip [color]="getGradePercentage() >= 50 ? 'primary' : 'warn'" selected>
+              {{ getGradePercentage() }}%
+            </mat-chip>
+          </mat-chip-listbox>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="questions-list">
+    @for (item of reviews; track item.text; let i = $index) {
+      <mat-card class="mb-3 review-item" [ngClass]="item.isCorrect ? 'correct-border' : 'incorrect-border'">
+        <mat-card-header>
+          <mat-icon mat-card-avatar [color]="item.isCorrect ? 'primary' : 'warn'">
+            {{ item.isCorrect ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+          <mat-card-title>Question {{ i + 1 }}</mat-card-title>
+          <span class="points-badge">{{ item.pointsEarned }} / {{ item.maxPoints }} Pts</span>
+        </mat-card-header>
+
+        <mat-card-content>
+          <p class="question-text">{{ item.text }}</p>
+          
+          <div class="answer-box">
+            <div class="answer-line">
+              <strong>Student Answer:</strong> 
+              <span [class.text-danger]="!item.isCorrect" [class.text-success]="item.isCorrect">
+                {{ item.studentAnswer }}
+              </span>
+            </div>
+            
+            @if (!item.isCorrect) {
+              <div class="answer-line">
+                <strong>Correct Answer:</strong> <span class="text-success">{{ item.correctAnswer }}</span>
+              </div>
+            }
+          </div>
+
+          @if (item.feedback) {
+            <mat-divider class="my-2"></mat-divider>
+            <div class="feedback-section">
+              <mat-icon>info</mat-icon> <em>{{ item.feedback }}</em>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

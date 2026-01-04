@@ -1,0 +1,37 @@
+<div class="course-list-container">
+  <h2>Available Courses</h2>
+
+  <div *ngIf="isLoading" class="loading-message">
+    <p>Loading courses...</p>
+    </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+    <button (click)="loadCourses()">Retry</button>
+  </div>
+
+  <div *ngIf="courses$ | async as courses" class="course-grid">
+    
+    <div *ngIf="courses.length === 0 && !isLoading" class="no-courses">
+        <p>No courses are currently available.</p>
+    </div>
+
+    <div *ngFor="let course of courses" 
+         class="course-card" 
+         (click)="selectCourse(course.id)">
+         
+      <div class="course-header">
+        <h3>{{ course.title }}</h3>
+      </div>
+      
+      <div class="course-body">
+        <p>{{ course.description | slice:0:100 }}...</p>
+        <p class="course-meta">Lessons: {{ course.lesson_count }}</p>
+      </div>
+      
+      <div class="course-footer">
+        <button>Start Learning</button>
+      </div>
+    </div>
+  </div>
+</div>

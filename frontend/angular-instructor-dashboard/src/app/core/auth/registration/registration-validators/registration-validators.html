@@ -1,0 +1,56 @@
+<div class="registration-container">
+  <h2>Create Account</h2>
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" placeholder="Enter username e.g JohnDoe" formControlName="username" class="form-control"
+             [class.is-invalid]="f['username'].touched && f['username'].invalid">
+      
+      @if (f['username'].pending) {
+        <small class="text-info">Checking availability...</small>
+      }
+      @if (f['username'].touched && f['username'].errors) {
+        <div class="error-msg">
+          @if (f['username'].errors['required']) { <span>Username is required.</span> }
+          @if (f['username'].errors['minlength']) { <span>Minimum 4 characters.</span> }
+          @if (f['username'].errors['notUnique']) { <span class="text-danger">Username already taken.</span> }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" placeholder="youremail@gmail.com" formControlName="email" class="form-control">
+      @if (f['email'].pending) { <small>Validating email...</small> }
+      @if (f['email'].touched && f['email'].errors?.['notUnique']) {
+        <div class="error-msg text-danger">Email already registered.</div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Phone Number (International Format)</label>
+      <input type="text" formControlName="phoneNumber" placeholder="+254..." class="form-control">
+      @if (f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']) {
+        <div class="error-msg text-danger">Invalid format (Ex: +254700000000)</div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" placeholder="Password" formControlName="password" class="form-control">
+    </div>
+
+    <button type="submit" [disabled]="registrationForm.invalid || registrationForm.pending" class="btn-submit">
+      @if (registrationForm.pending) {
+        <span>Verifying...</span>
+      } @else {
+        <span>Register</span>
+      }
+    </button>
+  </form>
+
+  <div class="auth-switch">
+  <p>Already have an account? <b><a routerLink="/login">Login here</a></b></p>
+</div>
+</div>

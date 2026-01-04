@@ -1,0 +1,28 @@
+{
+    // Use a unified image that contains both Node.js and Python
+    "image": "mcr.microsoft.com/devcontainers/universal:latest",
+
+    // Configure the VS Code environment within the Codespace
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/bin/python3",
+                "python.analysis.autoSearchPaths": true,
+                "editor.tabSize": 4
+            },
+            "extensions": [
+                "ms-python.python",        // Python development
+                "dbaeumer.vscode-eslint",   // JavaScript linting
+                "formulahendry.auto-rename-tag",
+                "esbenp.prettier-vscode",   // Code formatting
+                "angular.ng-template"       // Angular Language Service
+            ]
+        }
+    },
+
+    // Commands to run after the container is created
+    "postCreateCommand": "npm install -g @angular/cli",
+
+    // Ports to expose for testing the Django API and the three frontends
+    "forwardPorts": [8000, 4200, 3000, 4201] 
+}

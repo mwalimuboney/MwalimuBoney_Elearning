@@ -1,0 +1,71 @@
+<div class="school-mgmt-container container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+    <div>
+      <h2 class="display-6 fw-bold text-dark">Institutions</h2>
+      <p class="text-muted mb-0">Manage registered schools, departments, and administrative access.</p>
+    </div>
+    <button class="btn btn-primary btn-lg shadow-sm" (click)="openCreateModal()">
+      <i class="bi bi-plus-circle me-2"></i>Register School
+    </button>
+  </div>
+
+  <div class="row">
+    @for (school of schools; track school.id) {
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="school-card card h-100 shadow-sm border-0">
+          <div class="card-img-top school-banner d-flex align-items-center justify-content-center">
+            @if (school.logo_url) {
+              <img [src]="school.logo_url" [alt]="school.name" class="school-logo">
+            } @else {
+              <div class="logo-placeholder">{{ school.name | slice:0:1 }}</div>
+            }
+          </div>
+          
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title text-truncate pe-2">{{ school.name }}</h5>
+              <span class="status-badge" [class.active]="school.is_active">
+                {{ school.is_active ? 'Active' : 'Suspended' }}
+              </span>
+            </div>
+            
+            <p class="card-text text-muted small mb-4">
+              {{ school.description || 'No description provided for this institution.' }}
+            </p>
+
+            <div class="stats-row d-flex justify-content-around py-2 rounded-3 bg-light mb-3">
+              <div class="text-center">
+                <div class="fw-bold">{{ school.total_students || 0 }}</div>
+                <div class="small text-muted">Students</div>
+              </div>
+              <div class="vr"></div>
+              <div class="text-center">
+                <div class="fw-bold">{{ school.total_instructors || 0 }}</div>
+                <div class="small text-muted">Staff</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer bg-white border-0 pb-3">
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-secondary btn-sm" (click)="viewDepartments(school.id)">
+                View Departments
+              </button>
+              <button class="btn btn-light btn-sm text-primary" (click)="editSchool(school)">
+                Edit Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="col-12 text-center py-5">
+        <div class="empty-state">
+          <i class="bi bi-buildings display-1 text-light"></i>
+          <h3 class="mt-3">No Schools Found</h3>
+          <p class="text-muted">Start the journey by registering your first educational institution.</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

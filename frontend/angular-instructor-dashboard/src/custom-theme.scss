@@ -1,0 +1,42 @@
+@use '@angular/material' as mat;
+
+// 1. Include core styles once. This is required for things like 
+// overlays (dialogs/snackbars) and general component structure.
+@include mat.core();
+
+// 2. Define the theme
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$rose-palette,
+      tertiary: mat.$red-palette,
+    ),
+    typography: (
+      brand-family: 'Roboto',
+      plain-family: 'Roboto',
+    ),
+    density: 0, // 0 is default; -1, -2, -3 make components smaller/denser
+  ));
+}
+
+body {
+  // Use light color scheme by default
+  color-scheme: light;
+
+  // Apply M3 System Variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  
+  // Sets the global typography based on M3 specs
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+}
+
+// 3. Custom Utility Classes
+.full-width {
+  width: 100%;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

@@ -1,0 +1,68 @@
+<div class="admin-container container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold text-dark">Administrative Users</h2>
+      <p class="text-muted">Manage access levels and system permissions for Mwalimu Boney.</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="openAddAdminDialog()">
+      <mat-icon>person_add</mat-icon> Add Administrator
+    </button>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th>User Info</th>
+            <th>Role</th>
+            <th>Assigned To</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of adminUsers; track user.id) {
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar-circle me-3">{{ user.username | slice:0:1 | uppercase }}</div>
+                  <div>
+                    <div class="fw-bold">{{ user.username }}</div>
+                    <div class="small text-muted">{{ user.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge rounded-pill" [ngClass]="getRoleClass(user.role)">
+                  {{ user.role.replace('_', ' ') }}
+                </span>
+              </td>
+              <td>
+                <span class="text-muted small">
+                  {{ user.school_id ? 'School ID: ' + user.school_id : 'Global Access' }}
+                </span>
+              </td>
+              <td>
+                <mat-slide-toggle [checked]="user.is_active" color="primary"></mat-slide-toggle>
+              </td>
+              <td class="text-end">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item>
+                    <mat-icon>edit</mat-icon><span>Edit Permissions</span>
+                  </button>
+                  <button mat-menu-item class="text-danger">
+                    <mat-icon color="warn">delete</mat-icon><span>Revoke Access</span>
+                  </button>
+                </mat-menu>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

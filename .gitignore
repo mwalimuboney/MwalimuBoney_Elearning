@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python
 __pycache__/
 *.py[cod]
@@ -9,3 +10,6 @@ venv/
 node_modules/
 dist/
 .DS_Store
+=======
+backend/venv/
+>>>>>>> cd78dac7bd9d1f0fa068998c5753411707d5fece

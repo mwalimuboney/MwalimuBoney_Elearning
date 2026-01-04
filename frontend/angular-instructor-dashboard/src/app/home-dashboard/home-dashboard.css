@@ -1,0 +1,153 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 5%;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.brand { font-size: 1.5rem; font-weight: bold; }
+.brand span { color: #3f51b5; }
+
+/* Greeting Styling */
+.greeting-section {
+  padding: 40px 5%;
+  background: linear-gradient(135deg, #f5f7ff 0%, #ffffff 100%);
+}
+
+.greeting-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(63, 81, 181, 0.08);
+}
+
+.badge {
+  background: #e8eaf6;
+  color: #3f51b5;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* Responsive Grid (Pairs Animation) */
+.resource-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr; /* Mobile */
+  padding: 20px 5%;
+}
+
+@media (min-width: 768px) {
+  .resource-grid { grid-template-columns: repeat(2, 1fr); } /* Pairs */
+}
+
+@media (min-width: 1200px) {
+  .resource-grid { grid-template-columns: repeat(4, 1fr); } /* Desktop */
+}
+
+.res-card {
+  background: white;
+  border: 1px solid #f0f0f0;
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp 0.5s ease forwards;
+}
+
+.res-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* 
+<nav class="navbar">
+  <div class="brand">Mwalimu<span>Boney</span></div>
+  <div class="nav-links">
+    @if (isLoggedIn && isTeacher) {
+      <div class="dropdown">
+        <button class="drop-btn">Instructor Tools <mat-icon>expand_more</mat-icon></button>
+        <div class="dropdown-content">
+          <a routerLink="/instructor/dashboard">Dashboard</a>
+          <a routerLink="/instructor/exams">Exams</a>
+        </div>
+      </div>
+    }
+    
+    <a (click)="scrollTo('about')">About</a>
+    <a (click)="scrollTo('contact')">Contact</a>
+
+    @if (!isLoggedIn) {
+      <button mat-raised-button color="primary" routerLink="/login">Login</button>
+    } @else {
+      <button mat-button color="warn" (click)="logout()">Logout</button>
+    }
+  </div>
+</nav>
+
+<header class="greeting-section">
+  <div class="greeting-card">
+    <div class="text-content">
+      <span class="badge">{{ greeting }}</span>
+      <h1>Welcome back, {{ isLoggedIn ? userName : 'Scholar' }}!</h1>
+      <p>Explore the latest resources curated just for you.</p>
+    </div>
+    
+    @if (isLoggedIn) {
+      <div class="stats-overview">
+        <div class="stat">
+          <span class="value">{{ resources.length }}</span>
+          <span class="label">Resources</span>
+        </div>
+      </div>
+    }
+  </div>
+</header>
+
+<section id="resources" class="section-container">
+  <h2 class="section-title">Academic Resources</h2>
+  <div class="resource-grid">
+    @for (res of resources; track res.name) {
+      <div class="res-card" (click)="handleResourceClick(res)">
+        <div class="card-content">
+          <h3>{{ res.name }}</h3>
+          <p class="uploader">Uploaded by: <strong>{{ res.uploader }}</strong></p>
+          <div class="meta">
+            <span class="views"><mat-icon>visibility</mat-icon> {{ res.views }}</span>
+            <span class="date">{{ res.date }}</span>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <p class="empty-msg">No resources available at the moment.</p>
+    }
+  </div>
+</section>
+
+<section id="about" class="about-section">
+  <div class="content">
+    <h2>About Mwalimu Boney</h2>
+    <p>We provide a streamlined environment for both instructors and students to share and access high-quality educational materials effortlessly.</p>
+  </div>
+</section>
+
+<section id="contact" class="contact-section">
+  <h2>Contact Us</h2>
+  <p>Have questions? Reach out to us at <strong>support&#64;mwalimuboney.com</strong></p>
+</section>
+
+<footer class="footer">
+  <p>&copy; 2025 Mwalimu Boney E-Learning. All rights reserved.</p>
+</footer> */
